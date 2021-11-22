@@ -1,13 +1,11 @@
 package uia.com.compras;
-
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Map.Entry;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -18,16 +16,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 
+/**
+ * @author amiguel
+ * @version 1.0
+ * @created 12-nov.-2019 11:27:37 a. m.
+ */
 public class GestorCompras {
 	private int opcion;
-	//private ListaKClientes miReportname = "Cartucho Tóner"eNS;
     private ListaReportesNivelStock miReporteNS;
     private PeticionOrdenCompra miPeticionOC = new PeticionOrdenCompra();
+    private PeticionOrdenCompra miSolicituOC;
+    private Comprador miComprador = new Comprador();
+    private SolicitudCotizacion solicitudCotizacion = new SolicitudCotizacion();
 
-    private int idCompra = 5;
-
-	public GestorCompras() 
-	{
+	public GestorCompras() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         
         try {
@@ -59,30 +61,24 @@ public class GestorCompras {
                 miNodo.print();
             }
 
-
-            try {
-                mapper.writeValue(new FileOutputStream("C:\\Users\\uriel\\IdeaProjects\\ComprasProy-master\\peticionOrdenCompraV4.json"), miPeticionOC);
-            }
-            catch (JsonParseException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            catch (JsonMappingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            finally {
-                miPeticionOC.hazSolicitudOrdenCompra(miReporteNS);
-            }
+            miComprador.hazSolicitudOrdenCompra(miPeticionOC);
         }
+        //solicitudCotizacion.hazCotizacion(miComprador);
+        miSolicituOC=miComprador.buscaVendedor(miPeticionOC);
+        miComprador.agrupaVendedores(miSolicituOC);
 
+        solicitudCotizacion.hazCotizacion(miPeticionOC);
+
+        for (Entry<Integer, HashMap<Integer, ArrayList<InfoComprasUIA>>> item : miComprador.getVendedores().entrySet())
+        {
+            int iVendedor = item.getKey();
+             HashMap<Integer, ArrayList<InfoComprasUIA>> nodo = item.getValue();
+             mapper.writeValue(new File("C:/Users/uriel/IdeaProjects/ComprasProy-master/SolicitudOrdenCompra-Vendedor-"+iVendedor+".json"), nodo);
+             //solicitudCotizacion.hazCotizacion(mapper);
+
+        }
+        solicitudCotizacion.hazCotizacion(miComprador);
 	}
-
-
     public void print()
     {
 
