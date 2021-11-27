@@ -1,13 +1,10 @@
 package uia.com.compras;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -25,16 +22,17 @@ public class GestorCompras {
 	private int opcion;
     private ListaReportesNivelStock miReporteNS;
     private PeticionOrdenCompra miPeticionOC = new PeticionOrdenCompra();
-    private PeticionOrdenCompra miSolicituOC;
+    private SolicitudOrdenCompra miSolicituOC;
     private Comprador miComprador = new Comprador();
-    private SolicitudCotizacion solicitudCotizacion = new SolicitudCotizacion();
+    private ArrayList<SolicitudOrdenCompra> misSolicitudesOC;
 
-	public GestorCompras() throws IOException {
+
+    public GestorCompras() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         
         try {
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-			miReporteNS = mapper.readValue(new FileInputStream("C:\\Users\\uriel\\IdeaProjects\\ComprasProy-master\\arregloItemsV1.json"), ListaReportesNivelStock.class );
+			miReporteNS = mapper.readValue(new FileInputStream("C:\\Users\\uriel\\IG\\ComprasProy-master\\arregloItemsV1.json"), ListaReportesNivelStock.class );
             
         }
         catch (JsonParseException e) {
@@ -63,24 +61,43 @@ public class GestorCompras {
 
             miComprador.hazSolicitudOrdenCompra(miPeticionOC);
         }
-        //solicitudCotizacion.hazCotizacion(miComprador);
+
         miSolicituOC=miComprador.buscaVendedor(miPeticionOC);
         miComprador.agrupaVendedores(miSolicituOC);
+        int iOrden = 1;
 
-        solicitudCotizacion.hazCotizacion(miPeticionOC);
+        if(misSolicitudesOC == null)
+            misSolicitudesOC = new ArrayList<SolicitudOrdenCompra>();
 
-        for (Entry<Integer, HashMap<Integer, ArrayList<InfoComprasUIA>>> item : miComprador.getVendedores().entrySet())
+        for (Entry<Integer, HashMap<Integer, ArrayList<InfoComprasUIA>>> item : miComprador.getSolicitudesOrdenCompraAgrupadosXvendedores().entrySet())
         {
             int iVendedor = item.getKey();
-             HashMap<Integer, ArrayList<InfoComprasUIA>> nodo = item.getValue();
-             mapper.writeValue(new File("C:/Users/uriel/IdeaProjects/ComprasProy-master/SolicitudOrdenCompra-Vendedor-"+iVendedor+".json"), nodo);
-             //solicitudCotizacion.hazCotizacion(mapper);
+            HashMap<Integer, ArrayList<InfoComprasUIA>> nodo = item.getValue();
+             //genero el identificador  idCompra
+            int idCompra = item.getKey()*1000+ iOrden*100;
+             //Formateando para ser un documento de SolicitudIrdenCompra por lo que creo una clase SolicitudOrdenCompra
 
+            //SolicitudOrdenCompra(@JsonProperty("id")int id, @JsonProperty("name")String name,
+            //@JsonProperty("codigo")String codigo, @JsonProperty("unidad")String unidad,
+            //@JsonProperty("cantidad")int cantidad, @JsonProperty("vendedor")int vendedor,@JsonProperty("clasificacionProveedor")int clasificacionVendedor)
+
+            for (Entry<Integer, ArrayList<InfoComprasUIA>> soc : nodo.entrySet())
+            {
+                SolicitudOrdenCompra newSolicitud = new SolicitudOrdenCompra(idCompra, "SOC-" + idCompra, "", "", 0, item.getKey(), soc.getKey());
+                newSolicitud.setItems(soc.getValue());
+                misSolicitudesOC.add(newSolicitud);
+                mapper.writeValue(new File("C:/Users/uriel/IG/ComprasProy-master/SolicitudOrdenCompra-" + newSolicitud.getName() + ".json"), newSolicitud);
+            }
         }
-        solicitudCotizacion.hazCotizacion(miComprador);
+        //--Envio a Comprador las cotizacion para que genere al menos 3 cotizaciones con vendedores diferentes (0-4)
+        HashMap<Integer, ArrayList<Cotizacion>> misSolicitudesCotizacion =  miComprador.hazCotizaciones(misSolicitudesOC, mapper);
+
+
 	}
+
+
     public void print()
     {
-
     }
+
 }//end KardexListaKClientes
