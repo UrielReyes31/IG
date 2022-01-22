@@ -170,5 +170,29 @@ public class Comprador {
         return this.cotizaciones;
     }
 
+    public void seleccionaVendedores(HashMap<Integer, ArrayList<Cotizacion>> misSolicitudesCotizacion){
+        double cotizacionMin = 99999999;
+        Integer claveSeleccionada = null;
+        for (Integer clave:misSolicitudesCotizacion.keySet()) {
+            ArrayList<Cotizacion> valor = misSolicitudesCotizacion.get(clave);
+            System.out.println("--------------------");
+            System.out.println("clave de cotizacion: "+clave +"\n Cotizacion: "+ valor.get(clave).getSubtotal());
+            if (valor.get(clave).getTotal() < cotizacionMin) {
+                cotizacionMin = valor.get(clave).getTotal();
+                claveSeleccionada = clave;
+            }
+        }
+        System.out.println("------------------------");
+        System.out.println(" vendedor Seleccionado");
+        System.out.println("------------------------");
+        ArrayList<Cotizacion> valor = misSolicitudesCotizacion.get(claveSeleccionada);
 
+        System.out.println("id: "+valor.get(claveSeleccionada).getId());
+        System.out.println("Nombre: "+valor.get(claveSeleccionada).getName());
+        System.out.println("vendedor: " + valor.get(claveSeleccionada).getVendedor());
+        System.out.println("clave de cotozacion; "+claveSeleccionada);
+        System.out.println("cotizacion seleccionada: "+ valor.get(claveSeleccionada).getTotal());
+        System.out.println("pedido: "+valor.get(claveSeleccionada).getPedidoProveedor());
+
+    }
 }

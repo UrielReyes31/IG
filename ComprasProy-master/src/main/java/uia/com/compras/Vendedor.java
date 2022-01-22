@@ -36,10 +36,12 @@ public class Vendedor{
             nodo.setValorUnitario((i+1)*int_precio);
             nodo.setSubtotal(nodo.getValorUnitario()*nodo.getCantidad());
             total = total+nodo.getSubtotal();
+
             nodo.setVendedor(this.id);
             newLista.add(nodo);
-        }
+            //System.out.println("total: "+nodo.getSubtotal());
 
+        }
         Cotizacion newCotizacion = new Cotizacion(solicitudOrdenCompra.getId(),
                                             "Cotizacion-" + solicitudOrdenCompra.getName(), "", "", 1,
                                              solicitudOrdenCompra.getVendedor(), solicitudOrdenCompra.getClasificacion(),

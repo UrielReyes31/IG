@@ -91,7 +91,9 @@ public class GestorCompras {
         }
         //--Envio a Comprador las cotizacion para que genere al menos 3 cotizaciones con vendedores diferentes (0-4)
         HashMap<Integer, ArrayList<Cotizacion>> misSolicitudesCotizacion =  miComprador.hazCotizaciones(misSolicitudesOC, mapper);
+        //System.out.println(misSolicitudesCotizacion.get(miComprador.getCotizaciones()));
 
+        miComprador.seleccionaVendedores(misSolicitudesCotizacion);
 
 	}
 
