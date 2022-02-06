@@ -174,7 +174,7 @@ public class GestorCompras {
         mapper.writeValue(new File( miReporteNS.getName() + ".json"), miReporteNS);
     }
 
-    public void borraDLT(Long id) throws IOException{
+    public CotizacionModelo borraDLT(Long id) throws IOException{
         if (this.miModeloCotizaciones == null)
             this.getCotizaciones();
         for(int i=0; i< this.miModeloCotizaciones.size(); i++)
@@ -182,11 +182,14 @@ public class GestorCompras {
             if(this.miModeloCotizaciones.get(i).getId() == id){
                 miModeloCotizaciones.remove(i);
                 this.salvaDLT(i);
+                return miModeloCotizaciones.get(i);
             }
         }
+   return null;
     }
     private void salvaDLT(int i) throws IOException {
         mapper.writeValue(new File("id eliminado: "+ miModeloCotizaciones.get(i).getId() + ".json"), miModeloCotizaciones);
+
     }
 
 }//end KardexListaKClientes

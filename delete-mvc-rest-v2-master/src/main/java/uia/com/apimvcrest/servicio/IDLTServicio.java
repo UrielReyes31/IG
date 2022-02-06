@@ -1,9 +1,9 @@
 package uia.com.apimvcrest.servicio;
 
-import uia.com.apimvcrest.compras.InfoComprasUIA;
+import uia.com.apimvcrest.modelo.CotizacionModelo;
 
 import java.io.IOException;
 
 public interface IDLTServicio {
-    void borraDLT(Long id) throws IOException;
+    CotizacionModelo borraDLT(Long id) throws IOException;
 }

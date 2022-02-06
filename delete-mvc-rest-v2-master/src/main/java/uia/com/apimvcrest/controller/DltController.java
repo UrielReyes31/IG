@@ -1,7 +1,7 @@
 package uia.com.apimvcrest.controller;
 
 import org.springframework.web.bind.annotation.*;
-import uia.com.apimvcrest.compras.InfoComprasUIA;
+import uia.com.apimvcrest.modelo.CotizacionModelo;
 import uia.com.apimvcrest.servicio.DLTServicio;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ public class DltController {
     }
 
     @DeleteMapping("/cotizaciones/{id}")
-    public void dlt(@PathVariable("id") Long id) throws IOException{
-        servicioDlt.borraDLT(id);
+    public CotizacionModelo dlt(@PathVariable("id") Long id) throws IOException{
+        return servicioDlt.borraDLT(id);
     }
 }
