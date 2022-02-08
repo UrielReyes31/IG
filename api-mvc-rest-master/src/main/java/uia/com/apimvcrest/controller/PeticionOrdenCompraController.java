@@ -4,9 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import uia.com.apimvcrest.modelo.CotizacionModelo;
+import uia.com.apimvcrest.modelo.ItemPOCModelo;
 import uia.com.apimvcrest.modelo.PeticionOrdenCompraModelo;
-import uia.com.apimvcrest.servicio.CotizacionServicio;
 import uia.com.apimvcrest.servicio.PeticionOrdenCompraServicio;
 
 import java.io.IOException;
@@ -21,7 +20,7 @@ public class PeticionOrdenCompraController {
     }
 
     @GetMapping("/peticiones")
-    public ArrayList<PeticionOrdenCompraModelo> peticiones()
+    public ArrayList<ItemPOCModelo> peticiones()
     {
         return servicioPeticion.getPeticiones();
     }

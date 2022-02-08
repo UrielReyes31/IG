@@ -18,6 +18,10 @@ public class ItemCotizacionModelo
         this.total = total;
     }
 
+    public ItemCotizacionModelo() {
+
+    }
+
 
     public double getValorUnitario() {
         return valorUnitario;

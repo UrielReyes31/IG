@@ -11,9 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uia.com.apimvcrest.modelo.CotizacionModelo;
-import uia.com.apimvcrest.modelo.IpeticionOrdenModelo;
 import uia.com.apimvcrest.modelo.ItemCotizacionModelo;
-import uia.com.apimvcrest.modelo.PeticionOrdenCompraModelo;
+import uia.com.apimvcrest.modelo.ItemPOCModelo;
 
 
 /**
@@ -32,8 +31,8 @@ public class GestorCompras {
     //HashMap<Integer, ArrayList<InfoComprasUIA>> misSolicitudesOC;
     HashMap<Integer, Cotizacion> misCotizacionesOrdenCompra;
     ArrayList<CotizacionModelo> miModeloCotizaciones;
-    HashMap<Integer, PeticionOrdenCompra> misPeticiones;
-    ArrayList<PeticionOrdenCompraModelo> miModeloPeticiones;
+
+    ArrayList<ItemPOCModelo> miModeloPeticiones;
 
 
     public GestorCompras() throws IOException {
@@ -41,8 +40,9 @@ public class GestorCompras {
         
         try {
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-			miReporteNS = mapper.readValue(new FileInputStream("C:\\Users\\uriel\\IdeaProjects\\api-mvc-rest-master\\arregloItemsV1.json"), ListaReportesNivelStock.class );
-            
+            miReporteNS = mapper.readValue(new FileInputStream("arregloItemsV1.json"), ListaReportesNivelStock.class );
+
+
         }
         catch (JsonParseException e) {
             // TODO Auto-generated catch block
@@ -96,7 +96,7 @@ public class GestorCompras {
                 SolicitudOrdenCompra newSolicitud = new SolicitudOrdenCompra(idCompra, "SOC-" + idCompra, "", "", 0, item.getKey(), soc.getKey());
                 newSolicitud.setItems(soc.getValue());
                 misSolicitudesOC.add(newSolicitud);
-                mapper.writeValue(new File("C:\\Users\\uriel\\IdeaProjects\\api-mvc-rest-master\\SolicitudOrdenCompra-" + newSolicitud.getName() + ".json"), newSolicitud);
+                mapper.writeValue(new File(newSolicitud.getName() + ".json"), newSolicitud);
             }
         }
 
@@ -172,60 +172,23 @@ public class GestorCompras {
     }
 
 
-    public ArrayList<PeticionOrdenCompraModelo> getPeticiones()
+    public ArrayList<ItemPOCModelo> getPeticiones()
     {
-        miModeloPeticiones = new ArrayList<PeticionOrdenCompraModelo>();
-        for(int i=0; i<misPeticiones.size(); i++)
-        {
-            //   CotizacionModelo(int id, String name, String codigo,  int vendedor, int clasificacionVendedor, double total, int entrega)
-            PeticionOrdenCompraModelo item = new PeticionOrdenCompraModelo(misPeticiones.get(i).getId()
-                    , misPeticiones.get(i).getName()
-                    , misPeticiones.get(i).getCodigo()
-                    , misPeticiones.get(i).getVendedor()
-                    , misPeticiones.get(i).getClasificacion()
-                    , misPeticiones.get(i).getCantidad()
-                    ,misPeticiones.get(i).getDescripcion()
-                    ,misPeticiones.get(i).getPedidoProveedor()
-            );
-            if(misPeticiones.get(i).getItems() != null)
-            {
-                ArrayList<IpeticionOrdenModelo> misItemsPeticion = new ArrayList<IpeticionOrdenModelo>();
-                for(int j=0; j<misPeticiones.get(i).getItems().size(); j++)
+        miModeloPeticiones = new ArrayList<ItemPOCModelo>();
+                for(int j=0; j<miPeticionOC.getItems().size(); j++)
                 {
                     //ItemCotizacionModelo(int cantidad, double valorUnitario, double subtotal, double total)
-                    IpeticionOrdenModelo nodo = new IpeticionOrdenModelo(
-                            misPeticiones.get(i).getItems().get(j).getCantidad()
-                            , misPeticiones.get(i).getPedidoProveedor()
-                            ,misPeticiones.get(i).getUnidad()
-                            ,misPeticiones.get(i).getCodigo()
-                            ,misPeticiones.get(i).getClasificacion()
-                            ,misPeticiones.get(i).getDescripcion()
+                    ItemPOCModelo nodo = new ItemPOCModelo(
+                            miPeticionOC.getItems().get(j).getCantidad()
+                            ,0.0
+                            ,0.0
+                            ,0.0
+                            ,miPeticionOC.getItems().get(j).getUnidad()
                     );
-                    System.out.println( misPeticiones.get(i).getPedidoProveedor());
-                    System.out.println(misPeticiones.get(1).getCantidad());
-                    misItemsPeticion.add(nodo);
+                    miModeloPeticiones.add(nodo);
                 }
-                System.out.println(misPeticiones.get(1).getCantidad());
-                item.setItems(misItemsPeticion);
-                miModeloPeticiones.add(item);
-            }
-        }
-
         return miModeloPeticiones;
     }
 
 
-
-    public Object getPeticion(int id)
-    {
-        if (this.miModeloPeticiones == null)
-            this.getCotizaciones();
-        for(int i=0; i< this.miModeloPeticiones.size(); i++)
-        {
-            if(this.miModeloPeticiones.get(i).getId() == id)
-                return this.miModeloPeticiones.get(i);
-        }
-
-        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-    }
 }//end KardexListaKClientes

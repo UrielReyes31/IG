@@ -1,11 +1,11 @@
 package uia.com.apimvcrest.servicio;
 
-import uia.com.apimvcrest.modelo.PeticionOrdenCompraModelo;
+import uia.com.apimvcrest.modelo.ItemPOCModelo;
 
 import java.util.ArrayList;
 
 public interface IPeticionOrdenCompraServicio {
-    ArrayList<PeticionOrdenCompraModelo> getPeticiones();
+    ArrayList<ItemPOCModelo> getPeticiones();
     Object getPeticion(int id);
     void print();
 }

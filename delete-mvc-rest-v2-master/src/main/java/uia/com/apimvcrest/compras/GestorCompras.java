@@ -18,7 +18,7 @@ import uia.com.apimvcrest.modelo.ItemCotizacionModelo;
  * @created 12-nov.-2019 11:27:37 a. m.
  */
 public class GestorCompras {
-	private int opcion;
+    private int opcion;
     private ListaReportesNivelStock miReporteNS;
     private PeticionOrdenCompra miPeticionOC = new PeticionOrdenCompra();
     private SolicitudOrdenCompra miSolicitudOC;
@@ -35,8 +35,8 @@ public class GestorCompras {
 
         try {
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-			miReporteNS = mapper.readValue(new FileInputStream("arregloItemsV1.json"), ListaReportesNivelStock.class );
-            
+            miReporteNS = mapper.readValue(new FileInputStream("arregloItemsV1.json"), ListaReportesNivelStock.class );
+
         }
         catch (JsonParseException e) {
             // TODO Auto-generated catch block
@@ -102,7 +102,7 @@ public class GestorCompras {
         misSolicitudesCotizacion =  miComprador.hazCotizaciones(misSolicitudesOC, mapper);
         misCotizacionesOrdenCompra =  miComprador.seleccionaVendedores(misSolicitudesCotizacion, mapper);
 
-	}
+    }
 
 
     public void printMiModeloCotizaciones()
@@ -114,37 +114,37 @@ public class GestorCompras {
 
     public ArrayList<CotizacionModelo> getCotizaciones()
     {
-            miModeloCotizaciones = new ArrayList<CotizacionModelo>();
-            for(int i=0; i<misCotizacionesOrdenCompra.size(); i++)
+        miModeloCotizaciones = new ArrayList<CotizacionModelo>();
+        for(int i=0; i<misCotizacionesOrdenCompra.size(); i++)
+        {
+            //   CotizacionModelo(int id, String name, String codigo,  int vendedor, int clasificacionVendedor, double total, int entrega)
+            CotizacionModelo item = new CotizacionModelo(misCotizacionesOrdenCompra.get(i).getId()
+                    , misCotizacionesOrdenCompra.get(i).getName()
+                    , misCotizacionesOrdenCompra.get(i).getCodigo()
+                    , misCotizacionesOrdenCompra.get(i).getVendedor()
+                    , misCotizacionesOrdenCompra.get(i).getClasificacion()
+                    , misCotizacionesOrdenCompra.get(i).getTotal()
+                    , misCotizacionesOrdenCompra.get(i).getEntrega());
+            if(misCotizacionesOrdenCompra.get(i).getItems() != null)
             {
-                //   CotizacionModelo(int id, String name, String codigo,  int vendedor, int clasificacionVendedor, double total, int entrega)
-                CotizacionModelo item = new CotizacionModelo(misCotizacionesOrdenCompra.get(i).getId()
-                        , misCotizacionesOrdenCompra.get(i).getName()
-                        , misCotizacionesOrdenCompra.get(i).getCodigo()
-                        , misCotizacionesOrdenCompra.get(i).getVendedor()
-                        , misCotizacionesOrdenCompra.get(i).getClasificacion()
-                        , misCotizacionesOrdenCompra.get(i).getTotal()
-                        , misCotizacionesOrdenCompra.get(i).getEntrega());
-                if(misCotizacionesOrdenCompra.get(i).getItems() != null)
+                ArrayList<ItemCotizacionModelo> misItemsCotizaciones = new ArrayList<ItemCotizacionModelo>();
+                for(int j=0; j<misCotizacionesOrdenCompra.get(i).getItems().size(); j++)
                 {
-                    ArrayList<ItemCotizacionModelo> misItemsCotizaciones = new ArrayList<ItemCotizacionModelo>();
-                    for(int j=0; j<misCotizacionesOrdenCompra.get(i).getItems().size(); j++)
-                    {
-                        //ItemCotizacionModelo(int cantidad, double valorUnitario, double subtotal, double total)
-                        ItemCotizacionModelo nodo = new ItemCotizacionModelo(
-                                   misCotizacionesOrdenCompra.get(i).getItems().get(j).getCantidad()
-                                , misCotizacionesOrdenCompra.get(i).getValorUnitario()
-                                , misCotizacionesOrdenCompra.get(i).getSubtotal()
-                                , misCotizacionesOrdenCompra.get(i).getTotal());
-                        misItemsCotizaciones.add(nodo);
-                    }
-                    item.setItems(misItemsCotizaciones);
-                    miModeloCotizaciones.add(item);
+                    //ItemCotizacionModelo(int cantidad, double valorUnitario, double subtotal, double total)
+                    ItemCotizacionModelo nodo = new ItemCotizacionModelo(
+                            misCotizacionesOrdenCompra.get(i).getItems().get(j).getCantidad()
+                            , misCotizacionesOrdenCompra.get(i).getValorUnitario()
+                            , misCotizacionesOrdenCompra.get(i).getSubtotal()
+                            , misCotizacionesOrdenCompra.get(i).getTotal());
+                    misItemsCotizaciones.add(nodo);
                 }
+                item.setItems(misItemsCotizaciones);
+                miModeloCotizaciones.add(item);
             }
-
-            return miModeloCotizaciones;
         }
+
+        return miModeloCotizaciones;
+    }
 
 
 
@@ -185,7 +185,7 @@ public class GestorCompras {
                 return miModeloCotizaciones.get(i);
             }
         }
-   return null;
+        return null;
     }
     private void salvaDLT(int i) throws IOException {
         mapper.writeValue(new File("id eliminado: "+ miModeloCotizaciones.get(i).getId() + ".json"), miModeloCotizaciones);
