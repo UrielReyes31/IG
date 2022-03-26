@@ -25,6 +25,7 @@ export class CotizacionService {
       this.cotizacionesUrl = "http://localhost:8080/cotizaciones"+`?id=`+id;
       this.http.get<ICotizacion[]>(this.cotizacionesUrl).subscribe((pozos) => this.cotizaciones$.next(pozos));
       return this.cotizaciones$;
+      
   }
   
   private handleError<T>(operation = 'operation', result?: T) {
